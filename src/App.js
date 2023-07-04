@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Sudoku from './Sudoko_Grid.js';
 function App() {
