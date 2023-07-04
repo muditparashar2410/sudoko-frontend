@@ -1,0 +1,85 @@
+/* Sudoku.css */
+
+.sudoku-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  
+  .board-container {
+    margin-top: 20px;
+  }
+  
+  .board {
+    border-collapse: collapse;
+  }
+  
+  .board td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+  }
+  
+  .generate-button,hint-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  .sudoku-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .board-container {
+    margin-right: 20px;
+  }
+  
+  .board {
+    border-collapse: collapse;
+  }
+  
+  .board td {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .board td.selected-cell {
+    background-color: red;
+    color: white;
+  }
+  
+  .number-selector {
+    text-align: center;
+  }
+  
+  .number-selector h3 {
+    margin-bottom: 10px;
+  }
+  
+  .number-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .number-button {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .number-button.selected {
+    background-color: #ccc;
+  }
+  
