@@ -24,6 +24,28 @@
     font-weight: bold;
     border: 1px solid #ccc;
   }
+  .board {
+    border-collapse: collapse;
+  }
+  
+  .board tr:nth-child(3n+1) td {
+    border-top: 2px solid black;
+  }
+  
+  .board tr:nth-child(3n+3) td {
+    border-bottom: 2px solid black;
+  }
+  
+  .board tr td:nth-child(3n+1) {
+    border-left: 2px solid black;
+  }
+  
+  .board tr td:nth-child(3n+3) {
+    border-right: 2px solid black;
+  }
+  .original-cell {
+    color: blue;
+  }
   
   .generate-button,hint-button {
     margin-top: 20px;

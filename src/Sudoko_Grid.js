@@ -7,7 +7,28 @@ const Sudoku_Grid = () => {
   const [board, setBoard] = useState([]);
   const [selectedNumber, setSelectedNumber] = useState();
   const [selectedCell, setSelectedCell] = useState(null);
+  const [originalValues, setOriginalValues] = useState([]);
+ 
+  const checkGameStatus = () => {
+    let isBoardFilled = true;
 
+    for (let row of board) {
+      for (let cell of row) {
+        if (cell === '') {
+          isBoardFilled = false;
+          break;
+        }
+      }
+      if (!isBoardFilled) {
+        break;
+      }
+    }
+
+    if (isBoardFilled) {
+      alert('Congratulations! You have won the game!');
+      handleStartClick(); 
+    }
+  };
   // const generateBoard = () => {
   //   const newBoard = Array(9).fill().map(() => Array(9).fill(''));
   //   setBoard(newBoard);
@@ -34,8 +55,10 @@ const Sudoku_Grid = () => {
             //             const transformedData = response.data.puzzle.map((row) => row.map((cell) => cell.value));
             // setBoard(transformedData);
             // setBoard(newBoard);
-
+            const puzzleData = response.data;
             setBoard(response.data.map(row => row.map(cell => cell === 0 ? '' : cell)));;
+            const newOriginalValues = puzzleData.map(row => row.map(cell => (cell === 0 ? '' : cell)));
+            setOriginalValues(newOriginalValues);
           })
           .catch(error => {
             console.error('Failed to generate Sudoku puzzle:', error);
@@ -56,18 +79,24 @@ const Sudoku_Grid = () => {
       if (selectedCell !== null && selectedCell.row === rowIndex && selectedCell.col === colIndex) {
         return;
       }
+      const originalCellValue = originalValues[rowIndex][colIndex];
+    
+      if (originalCellValue !== '') {
+        return;
+      }
     
       const newBoard = [...board];
       newBoard[rowIndex][colIndex] = selectedNumber;
       setBoard(newBoard);
       setSelectedCell({ row: rowIndex, col: colIndex });
+      
     
       const requestData = {
         row: rowIndex,
         column: colIndex,
         value: selectedNumber
       };
-    
+      if (value !== '') {
       axios.post('https://sudokobackend.azurewebsites.net/api/sudoku/fill', requestData, {
         headers: {
           'Content-Type': 'application/json'
@@ -76,18 +105,39 @@ const Sudoku_Grid = () => {
         .then(response => {
           console.log('Cell filled:', response.data);
           // Handle the response if needed
+          setSelectedCell(null);
+          checkGameStatus();
         })
         .catch(error => {
-          console.error('Failed to fill cell:', error);
-  // Reset the cell value to blank
-  const newBoard = [...board];
-  newBoard[rowIndex][colIndex] = '';
-  setBoard(newBoard);
-  setSelectedCell(null);
-  // Alert the user about the error
-  alert('Failed to fill the cell. Please try again.');
-
+          console.error('Failed to fill cell:');
+          newBoard[rowIndex][colIndex] = '';
+      setBoard(newBoard);
+      setSelectedCell(null);
+      checkGameStatus();
         });
+      } else {
+        axios
+        .post('https://sudokobackend.azurewebsites.net/api/sudoku/clear', requestData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          console.log('Cell cleared:', response.data);
+          // Handle the response if needed
+          setSelectedCell(null);
+          checkGameStatus();
+        })
+        .catch(error => {
+          console.error('Failed to clear cell:', error);
+          // Reset the cell value to blank
+          newBoard[rowIndex][colIndex] = '';
+          setBoard(newBoard);
+          setSelectedCell(null);
+          // Alert the user about the error
+          alert('Failed to clear the cell. Please try again.');
+        });
+    }
     };
     
   const handleNumberSelect = (number) => {
@@ -119,7 +169,7 @@ const Sudoku_Grid = () => {
               {row.map((cell, colIndex) => (
                 <td
                   key={colIndex}
-                  className={selectedCell && selectedCell.row === rowIndex && selectedCell.col === colIndex ? 'selected-cell' : ''}
+                  className={`cell ${selectedCell && selectedCell.row === rowIndex && selectedCell.col === colIndex ? 'selected-cell' : ''} ${originalValues[rowIndex][colIndex] !== '' && board[rowIndex][colIndex] === originalValues[rowIndex][colIndex] ? 'original-cell' : ''}`}
                   onClick={() => handleCellValueChange(rowIndex, colIndex)}
                 >
                   {cell}
